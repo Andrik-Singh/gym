@@ -1,5 +1,5 @@
 'use client'
-import { Calendar, Home, ChartNoAxesCombined,Logs, Settings } from "lucide-react"
+import { CookingPot, Home, ChartNoAxesCombined,Logs, Settings, Activity } from "lucide-react"
 
 import {
   Sidebar,
@@ -18,19 +18,24 @@ import Logo from "./Logo"
 // Menu items.
 const items = [
   {
-    title: "Workout Plans",
+    title: "Home",
     url: "/dashboard",
     icon: Home,
   },
   {
+    title: "Workout Plans",
+    url: "/dashboard/workout-plans",
+    icon: Activity,
+  },
+  {
     title: "Workout Logs",
-    url: "/dashboard/wprkout-logs",
+    url: "/dashboard/workout-logs",
     icon: Logs,
   },
   {
-    title: "Calendar",
-    url: "/dashboard/calendar",
-    icon: Calendar,
+    title: "MealPlan",
+    url: "/dashboard/meal-plan",
+    icon: CookingPot,
   },
   {
     title: "Progress",
@@ -39,7 +44,7 @@ const items = [
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/dashboard/settings",
     icon: Settings,
   },
 ]

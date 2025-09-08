@@ -8,6 +8,27 @@
       "when": 1755926609997,
       "tag": "0000_silly_nehzno",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1756734773875,
+      "tag": "0001_burly_scourge",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757079767918,
+      "tag": "0002_brainy_mojo",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1757080751978,
+      "tag": "0003_lethal_manta",
+      "breakpoints": true
     }
   ]
 }

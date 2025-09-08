@@ -4,7 +4,6 @@ import { getAuth } from "@/lib/server/get";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import SignOutButton from "./SignOutButton";
 import Logo from "./Logo";
 import { Skeleton } from "./ui/skeleton";
 import { AnimatedBackground } from "../../components/motion-primitives/animated-background";

@@ -45,6 +45,7 @@ export function LoginForm({
         provider: "github",
       });
       console.log(data);
+      throw data.error
     } catch (error) {
       console.log(error);
       setError("root", {
@@ -54,6 +55,22 @@ export function LoginForm({
       setSubmitting(false);
     }
   };
+  const handleSignInWithGoogle=async ()=>{
+    try {
+      setSubmitting(true)
+      const { data,error }=await authClient.signIn.social({
+        provider:"google",
+      })
+      throw error
+    } catch (error) {
+      console.log(error)
+      setError("root",{
+        message:"Failed to sign in with google"
+      })
+    }finally{
+      setSubmitting(false)
+    }
+  }
   const onSubmit = async (unsafeData: z.input<typeof loginSchema>) => {
     try {
       setSubmitting(true);
@@ -110,6 +127,7 @@ export function LoginForm({
                 <Button
                   type="button"
                   variant="outline"
+                  onClick={handleSignInWithGoogle}
                   className="w-full bg-transparent"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

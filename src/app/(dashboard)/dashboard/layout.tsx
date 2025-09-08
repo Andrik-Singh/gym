@@ -4,7 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
-      <main>
+      <main className="w-full h-auto bg-zinc-100">
         <AppSidebar/>
         <SidebarTrigger/>
         {children}
