@@ -29,6 +29,20 @@
       "when": 1757080751978,
       "tag": "0003_lethal_manta",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1758641980012,
+      "tag": "0004_lumpy_rage",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1758715227060,
+      "tag": "0005_whole_bill_hollister",
+      "breakpoints": true
     }
   ]
 }

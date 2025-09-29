@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   integer,
   pgTable,
@@ -23,14 +23,6 @@ export const mealPlanTagsEnum =pgEnum("mealPlanTagsEnum",[
   "muscle_building",
   "endurance",
   "flexibility",
-])
-export const mealTimeEnum=pgEnum("mealTimeEnum",[
-  "breakfast",
-  "lunch",
-  "dinner",
-  "snack",
-  "pre_workout",
-  "post_workout",
 ])
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -131,7 +123,6 @@ export const workoutExercises = pgTable("workoutExercises", {
   rest: text("rest"),
 });
 export const favouritePlans = pgTable("favouritePlans", {
-  id: text("id").primaryKey(),
   planId: text("planId")
     .notNull()
     .references(() => workoutPlans.planId, {
@@ -169,6 +160,7 @@ export const mealPlan = pgTable("mealPlan", {
   description: text("description").notNull(),
   mealPlanName: text("mealPlanName").notNull(),
   numberOfMealsInADay:integer("numberOfMealsInADay").default(3).notNull(),
+  tags:mealPlanTagsEnum("tags").array().notNull().default(sql`ARRAY[]::text[]`),
   totalProtein:integer("totalProtein").notNull(),
   totalCarbs:integer("totalCarbs").notNull(),
   totalFats:integer("totalFats").notNull(),
@@ -184,16 +176,17 @@ export const meal = pgTable("meal", {
   mealId: text("mealId").primaryKey(),
   mealPlanId: text("mealPlanId").references(() => mealPlan.mealPlanId, {
     onDelete: "cascade",
-  }),
+  }).notNull(),
   mealName: text("mealName").notNull(),
-  mealPlanTime:mealPlanTypeEnum("mealPlanTime").notNull(),
+  mealPlanTime:text("mealPlanTime").notNull(),
   calories: integer("calories").notNull(),
   protein: integer("protein").notNull(),
   carbs: integer("carbs").notNull(),
   fats: integer("fats").notNull(),
+  instructions:text("instructions").notNull(),
+  ingredients:text("ingredients").array().notNull().default(sql`ARRAY[]::text[]`)
 });
 export const favouriteMealPlans = pgTable("favouriteMealPlans", {
-  id: text("id").primaryKey(),
   mealId: text("mealId")
     .notNull()
     .references(() => mealPlan.mealPlanId, {

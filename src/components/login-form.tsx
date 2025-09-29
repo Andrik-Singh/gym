@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/lib/zod/loginSchema";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import z, { set } from "zod";
+import z from "zod";
 import { useRouter } from "next/navigation";
 import { CircleX, LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
@@ -30,7 +30,7 @@ export function LoginForm({
     register,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitted },
   } = useForm({
     defaultValues: {
       email: "",
@@ -45,7 +45,7 @@ export function LoginForm({
         provider: "github",
       });
       console.log(data);
-      throw data.error
+      throw data.error;
     } catch (error) {
       console.log(error);
       setError("root", {
@@ -55,22 +55,26 @@ export function LoginForm({
       setSubmitting(false);
     }
   };
-  const handleSignInWithGoogle=async ()=>{
+  const handleSignInWithGoogle = async () => {
     try {
-      setSubmitting(true)
-      const { data,error }=await authClient.signIn.social({
-        provider:"google",
-      })
-      throw error
+      setSubmitting(true);
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+      });
+      if (error) {
+        throw error;
+      }else{
+        router.push("/dashboard")
+      }
     } catch (error) {
-      console.log(error)
-      setError("root",{
-        message:"Failed to sign in with google"
-      })
-    }finally{
-      setSubmitting(false)
+      console.log(error);
+      setError("root", {
+        message: "Failed to sign in with google",
+      });
+    } finally {
+      setSubmitting(false);
     }
-  }
+  };
   const onSubmit = async (unsafeData: z.input<typeof loginSchema>) => {
     try {
       setSubmitting(true);
@@ -145,7 +149,7 @@ export function LoginForm({
                 </span>
               </div>
               <div className="grid gap-6">
-                {errors.root && (
+                {errors.root && !isSubmitted && (
                   <div className="flex items-center justify-center gap-5">
                     <CircleX size={40} color="#ff0a0a" strokeWidth={1.5} />
                     <p className="text-red-500">{errors.root.message}</p>

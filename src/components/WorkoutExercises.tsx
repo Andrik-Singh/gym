@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Timer, Dumbbell, Play, RotateCcw, Trophy, Target, Clock } from "lucide-react"
 import { Input } from "./ui/input"
 import { logExercise } from "@/lib/server/exercises/post"
+import { toast } from "sonner"
 
 const WorkoutExercises = ({
   id,
@@ -68,18 +69,17 @@ const WorkoutExercises = ({
   }, [isResting, restTimeRemaining])
 
   const handleNextSet = useCallback(async () => {
-    console.log(typeof weightLifted)
-    
-    // Ensure weightLifted is a number before logging
     const weight = weightLifted === "" ? 0 : weightLifted as number;
-    
+    if(weight<0){
+      toast.error("Weight cannot be less than 0 kg")
+      return
+    }
     const logResponse = await logExercise({
       exerciseId: data.exercises[currentExercise].exerciseId,
       weight: weight,
       sets: currentSet,
       reps: data.exercises[currentExercise].reps || ""
     })
-    console.log(logResponse)
     
     const currentExerciseData = data.exercises[currentExercise]
 
@@ -293,8 +293,9 @@ const WorkoutExercises = ({
               type="number"
               placeholder="Enter weight..."
               value={weightLifted}
+              min={0}
               onChange={(e) => setWeightLifted(e.target.value ? Number(e.target.value) : "")}
-              className="text-center text-lg font-semibold border-emerald-200 focus:border-emerald-400 focus:ring-emerald-400"
+              className="text-center text-lg font-semibold border-emerald-200 focus:border-emerald-400 focus:ring-emerald-400 dark:bg-emerald-900"
             />
             <div className="flex gap-2 flex-wrap">
               {[2.5, 5, 7.5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 150].map((weight) => (
@@ -314,7 +315,7 @@ const WorkoutExercises = ({
           <Button
             onClick={handleNextSet}
             className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold py-3 text-lg shadow-md"
-            disabled={!weightLifted}
+            disabled={Number(weightLifted)<0 || weightLifted.toLocaleString().length ==0}
           >
             {currentSet < currentExerciseData.sets
               ? `Complete Set ${currentSet}`

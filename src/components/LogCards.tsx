@@ -134,7 +134,7 @@ const LogCards = ({ res }: { res: workoutLogs[] }) => {
         </div>
       </div>
       {viewMode === 'date' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
           {dataByDate.map((dateGroup) => {
             const cardId = `date-${dateGroup.date}`;
             const isExpanded = expandedCards.has(cardId);
@@ -211,7 +211,7 @@ const LogCards = ({ res }: { res: workoutLogs[] }) => {
         </div>
       )}
       {viewMode === 'exercise' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
           {dataByExercise.map((exerciseGroup) => {
             const cardId = `exercise-${exerciseGroup.exerciseId}`;
             const isExpanded = expandedCards.has(cardId);
@@ -261,7 +261,7 @@ const LogCards = ({ res }: { res: workoutLogs[] }) => {
                 </CardHeader>
                 <CardContent>
                   <div className={`space-y-2 ${isExpanded ? '' : 'max-h-32 overflow-hidden'}`}>
-                    {exerciseGroup.logs.slice(0, isExpanded ? undefined : 4).map((log, idx) => (
+                    {exerciseGroup.logs.slice(0, isExpanded ? undefined : 4).map((log) => (
                       <div key={log.workOutLogs.logId} className="flex justify-between items-center bg-gray-50 rounded-md px-3 py-2">
                         <span className="text-xs text-gray-600">
                           {formatDate(log.workOutLogs.date)}

@@ -1,9 +1,10 @@
 "use server";
 import { db } from "@/db";
-import { workoutExercises, workoutPlans } from "@/db/schema";
+import { favouritePlans, workoutExercises, workoutPlans } from "@/db/schema";
 import { SavePlansInput, savePlansSchema } from "@/lib/zod/savePlans";
 import { randomUUID } from "crypto";
 import { getAuth } from "../get";
+import { and, eq } from "drizzle-orm";
 export async function SavePlans(
   unsafeData: SavePlansInput,
   plan: {
@@ -28,32 +29,24 @@ export async function SavePlans(
     }
 
     const user = authData.user;
-    console.log(user);
-    if (!user) {
-      return {
-        error: "Unauthorized",
-        success: false,
-        data: null,
-      };
-    }
     const data = savePlansSchema.parse(unsafeData);
+    console.log(data)
     console.log("Saving Plan:", data);
-    console.log("exercises plan", plan);
     const randomId = randomUUID();
     const plans = await db
       .insert(workoutPlans)
       .values({
+        planId: randomId,
         planName: data.name,
         nutrition: data.nutrition,
         progression: data.progression,
         numberOfDays: data.numberOfDays,
-        description: data.description,
         safety: data.safety,
+        showPublic: data.isPublic,
+        description: data.description,
         userId: user.id,
-        planId: randomId,
-      } as any)
+      })
       .returning();
-    console.log("Plans:", plans[0]);
     for (let i = 0; i < plan.length; i++) {
       for (const exercise of plan[i].exercises) {
         const exercises = await db
@@ -68,7 +61,6 @@ export async function SavePlans(
             workDay: i + 1,
           })
           .returning();
-        console.log(exercises);
       }
     }
     return {
@@ -83,5 +75,39 @@ export async function SavePlans(
       success: false,
       data: null,
     };
+  }
+}
+export async function toggleFavouritePlans(id: string, liked: boolean) {
+  try {
+    const authData = await getAuth();
+    if (!authData) {
+      return {
+        error: "Unauthorized user",
+      };
+    }
+    const { user } = authData;
+    console.log(liked);
+    if (liked) {
+      await db
+        .delete(favouritePlans)
+        .where(
+          and(
+            eq(favouritePlans.planId, id),
+            eq(favouritePlans.userId, user.id)
+          )
+        );
+    } else {
+      await db.insert(favouritePlans).values({
+        planId: id,
+        userId: user.id,
+      });
+    }
+    return {
+      error: null,
+    };
+  } catch (error) {
+    return{
+      error:"Internal server error occured"
+    }
   }
 }

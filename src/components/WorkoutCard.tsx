@@ -41,7 +41,7 @@ const WorkoutCard = ({
   index: number;
 }) => {
   return (
-    <Card className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-0 bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-sm hover:from-emerald-50/80 hover:to-white/80">
+    <Card className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-0 bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-sm hover:from-emerald-50/80 hover:to-white/80 dark:bg-black">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -69,7 +69,7 @@ const WorkoutCard = ({
           {dayPlan.exercises.slice(0, 4).map((exercise, exerciseIndex) => (
             <div
               key={exerciseIndex}
-              className="flex items-center gap-2 p-2 rounded-lg bg-white/50 hover:bg-white/80 transition-colors"
+              className="flex items-center gap-2 p-2 rounded-lg bg-white/50 hover:bg-white/80 transition-colors dark:bg-black"
             >
               <div className="w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0" />
               <span className="text-sm font-medium text-foreground truncate flex-1">
@@ -118,15 +118,15 @@ const WorkoutCard = ({
               {dayPlan?.exercises.map((exercise, exerciseIndex) => (
                 <div
                   key={exerciseIndex}
-                  className="p-4 rounded-xl bg-gradient-to-r from-gray-50 to-white border border-gray-200 hover:shadow-md transition-all duration-200"
+                  className="p-4 rounded-xl bg-gradient-to-r from-gray-50 to-white border border-gray-200 hover:shadow-md transition-all duration-200 dark:bg-black"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-emerald-100 rounded-lg dark:bg-black flex items-center justify-center">
                           <Dumbbell className="h-4 w-4 text-emerald-600" />
                         </div>
-                        <h3 className="font-semibold text-lg text-foreground">
+                        <h3 className="font-semibold text-lg text-foreground dark:text-secondary">
                           {exercise?.name ?? exercise?.exerciseName}
                         </h3>
                       </div>

@@ -1,8 +1,10 @@
+export const dynamic = "force-dynamic";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import getPlans from "@/lib/server/plans/get";
 import { Calendar, Dumbbell, Plus, Target } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 interface Data {
   success: boolean;
@@ -15,12 +17,16 @@ interface Data {
   }[];
   error: string;
 }
+export const metadata: Metadata = {
+  title: "Workout-plan",
+  description: "In this page you can find workout plan",
+};
 const page = async () => {
   const res: Data = await getPlans();
   if (!res.success) {
     throw new Error(res?.error);
   }
-  
+
   const data = res.data;
   return (
     <div className="min-h-screen p-6">
@@ -33,7 +39,8 @@ const page = async () => {
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Track your fitness journey with AI-powered workout plans tailored to your goals
+            Track your fitness journey with AI-powered workout plans tailored to
+            your goals
           </p>
         </div>
 
@@ -49,14 +56,24 @@ const page = async () => {
             </div>
 
             <div className="text-center space-y-3">
-              <h2 className="text-2xl font-semibold text-foreground">Ready to Start Your Fitness Journey?</h2>
+              <h2 className="text-2xl font-semibold text-foreground">
+                Ready to Start Your Fitness Journey?
+              </h2>
               <p className="text-muted-foreground max-w-md">
-                Create your first AI-powered workout plan and take the first step towards your fitness goals.
+                Create your first AI-powered workout plan and take the first
+                step towards your fitness goals.
               </p>
             </div>
 
-            <Button asChild size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3">
-              <Link href="/dashboard/new-plan" className="flex items-center gap-2">
+            <Button
+              asChild
+              size="lg"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
+            >
+              <Link
+                href="/dashboard/new-plan"
+                className="flex items-center gap-2"
+              >
                 <Plus className="h-5 w-5" />
                 Create Your First Plan
               </Link>
@@ -70,8 +87,14 @@ const page = async () => {
                   {data.length} {data.length === 1 ? "Plan" : "Plans"}
                 </Badge>
               </div>
-              <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                <Link href="/dashboard/new-plan" className="flex items-center gap-2">
+              <Button
+                asChild
+                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                <Link
+                  href="/dashboard/new-plan"
+                  className="flex items-center gap-2"
+                >
                   <Plus className="h-4 w-4" />
                   New Plan
                 </Link>
@@ -82,7 +105,7 @@ const page = async () => {
               {data.map((plan) => (
                 <Card
                   key={plan.planId}
-                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-white/50 backdrop-blur-sm hover:bg-white/80"
+                  className="group hover:shadow-lg transition-all duration-300 border-0 bg-white/50 backdrop-blur-sm hover:bg-white/80 dark:bg-black dark:hover:bg-black/70"
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
@@ -101,7 +124,9 @@ const page = async () => {
                   <CardContent className="space-y-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="h-4 w-4" />
-                      <span className="font-medium">{plan.numberOfDays} days</span>
+                      <span className="font-medium">
+                        {plan.numberOfDays} days
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -122,7 +147,9 @@ const page = async () => {
                         size="sm"
                         className="w-full group-hover:bg-emerald-50 group-hover:border-emerald-200 bg-transparent"
                       >
-                        <Link href={`/dashboard/workout-plans/${plan.planId}`}>View Plan</Link>
+                        <Link href={`/dashboard/workout-plans/${plan.planId}`}>
+                          View Plan
+                        </Link>
                       </Button>
                     </div>
                   </CardContent>
@@ -133,7 +160,7 @@ const page = async () => {
         )}
       </div>
     </div>
-  )
+  );
 };
 
 export default page;

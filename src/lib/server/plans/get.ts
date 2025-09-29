@@ -1,19 +1,20 @@
 "use server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { db } from "@/db";
-import { workoutPlans } from "@/db/schema";
+import { favouritePlans, workoutPlans } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { WorkoutPlanInput } from "@/lib/zod/newPlans";
-import { eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { WorkoutPlan } from "@/components/NewPlanForm";
+import { getAuth } from "../get";
 
-export default async function getPlans(id?:string) {
+export default async function getPlans(id?: string) {
   try {
     const authenticatedData = await auth.api.getSession({
       headers: await headers(),
     });
-    let data
+    let data;
     if (!authenticatedData?.user) {
       return {
         success: false,
@@ -21,17 +22,16 @@ export default async function getPlans(id?:string) {
         data: [],
       };
     }
-    if(!id){
+    if (!id) {
       data = await db
-      .select()
-      .from(workoutPlans)
-      .where(eq(workoutPlans.userId, authenticatedData.user.id));
-    }
-    else{
+        .select()
+        .from(workoutPlans)
+        .where(eq(workoutPlans.userId, authenticatedData.user.id));
+    } else {
       data = await db
-      .select()
-      .from(workoutPlans)
-      .where(eq(workoutPlans.planId, id));
+        .select()
+        .from(workoutPlans)
+        .where(eq(workoutPlans.planId, id));
     }
     console.log(data);
     return {
@@ -48,6 +48,110 @@ export default async function getPlans(id?:string) {
     };
   }
 }
+export async function getFavourite(id: string) {
+  try {
+    const data = await getAuth();
+    if (!data) {
+      return {
+        data: null,
+        error: "Unauthorized",
+      };
+    }
+    const { user } = data;
+    const res = await db
+      .select()
+      .from(favouritePlans)
+      .where(
+        and(eq(favouritePlans.planId, id), eq(favouritePlans.userId, user.id))
+      );
+    console.log(res);
+    return {
+      data: res,
+      error: null,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      data: null,
+      error: "Internal server error occured",
+    };
+  }
+}
+export async function getFavouritePlans() {
+  try {
+    const data = await getAuth();
+    if (!data) {
+      return {
+        data: null,
+        error: "Unauthorized user",
+      };
+    }
+    const { user } = data;
+    const res = await db
+      .select()
+      .from(workoutPlans)
+      .where(eq(workoutPlans.userId, user.id))
+      .innerJoin(
+        favouritePlans,
+        eq(favouritePlans.planId, workoutPlans.planId)
+      );
+    return {
+      data: res,
+      error: null,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      data: null,
+      error: "Internal server error occured",
+    };
+  }
+}
+export async function getAllPlans() {
+  try {
+    const data = await getAuth();
+    if (!data) {
+      return {
+        data: null,
+        error: "Unauthorized",
+      };
+    }
+    const res = await db
+      .select()
+      .from(workoutPlans)
+      .where(eq(workoutPlans.showPublic, true))
+    return {
+      data: res,
+      error: null,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      data: null,
+      error: "Internal server error occured",
+    };
+  }
+}
+export async function listAvailableModels() {
+  if (!process.env.GEMINI_API_KEY) {
+    console.log("GEMINI_API_KEY is not set");
+    return null;
+  }
+  
+  try {
+    const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    // Note: This might not work with all API keys/versions
+    // But it's worth trying for debugging
+    const models = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`)
+      .then(res => res.json());
+    console.log("Available models:", models);
+    return models;
+  } catch (error) {
+    console.error("Error listing models:", error);
+    return null;
+  }
+}
+
 export async function getAiAdvice(data: WorkoutPlanInput) {
   if (!process.env.GEMINI_API_KEY) {
     return {
@@ -57,7 +161,7 @@ export async function getAiAdvice(data: WorkoutPlanInput) {
   }
 
   try {
-    const prompt =`Create a personalized workout plan for the user based on the following information:
+    const prompt = `Create a personalized workout plan for the user based on the following information:
 
 Personal Details:
 - Age: ${data.age}
@@ -117,13 +221,26 @@ JSON structure:
   "progression": "How the user should increase intensity over time, including how to schedule rest days",
   "safety": "Any safety notes based on health info",
   "nutrition": "Recommended nutritional guidance aligned with goals"
-}`
-;
+}`;
 
     const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAi.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      systemInstruction: `
+    const modelNames = [
+      "gemini-2.5-flash",       // Best price-performance, current stable
+      "gemini-2.0-flash",       // Next-gen features, stable  
+      "gemini-1.5-flash",       // Legacy but still supported stable
+      "gemini-2.5-pro",         // Most powerful but more expensive
+      "gemini-1.5-pro"          // Legacy pro model
+    ];
+    
+    let model;
+    let modelError;
+    
+    // Try each model until one works
+    for (const modelName of modelNames) {
+      try {
+        model = genAi.getGenerativeModel({
+          model: modelName,
+          systemInstruction: `
 You are a JSON generator for workout plans. 
 CRITICAL RULES:
 1. Return ONLY valid JSON - no markdown, no backticks, no explanations
@@ -134,7 +251,28 @@ CRITICAL RULES:
 6. Validate JSON structure before responding
 7. Rest days shouldn't count on total number of days 
   `,
-    });
+        });
+        
+        // Just set the model without testing - testing might cause issues
+        console.log(`Using model: ${modelName}`);
+        break;
+      } catch (err) {
+        console.log(`Model ${modelName} failed during setup:`, err instanceof Error ? err.message : String(err));
+        modelError = err;
+        model = undefined;
+        continue;
+      }
+    }
+    
+    if (!model) {
+      return {
+        success: false,
+        error: {
+          message: "No supported Gemini model found",
+          details: modelError instanceof Error ? modelError.message : String(modelError),
+        },
+      };
+    }
 
     const result = await model.generateContent(prompt);
     const raw = result.response.text().trim();
@@ -142,8 +280,8 @@ CRITICAL RULES:
     cleaned = cleaned.replace(/^```(?:json)?\s*|\s*```$/g, "");
     cleaned = cleaned.replace(/:\s*as many as possible/g, ': "AMRAP"');
     cleaned = cleaned.replace(/:\s*(\d+)\s*reps/g, ': "$1"');
-    cleaned = cleaned.replace(/,\s*}/g, '}'); 
-    cleaned = cleaned.replace(/,\s*]/g, ']'); 
+    cleaned = cleaned.replace(/,\s*}/g, "}");
+    cleaned = cleaned.replace(/,\s*]/g, "]");
 
     let planJson: WorkoutPlan | null = null;
     try {
@@ -154,13 +292,20 @@ CRITICAL RULES:
       console.log("Cleaned output:", cleaned);
       try {
         let fixedJson = cleaned;
-        fixedJson = fixedJson.replace(/:\s*([a-zA-Z][^,}\]]*)/g, (match, value) => {
-          if (value.startsWith('"') || ['null', 'true', 'false'].includes(value.toLowerCase()) || /^\d+(\.\d+)?$/.test(value)) {
-            return match;
+        fixedJson = fixedJson.replace(
+          /:\s*([a-zA-Z][^,}\]]*)/g,
+          (match, value) => {
+            if (
+              value.startsWith('"') ||
+              ["null", "true", "false"].includes(value.toLowerCase()) ||
+              /^\d+(\.\d+)?$/.test(value)
+            ) {
+              return match;
+            }
+            return `: "${value.trim()}"`;
           }
-          return `: "${value.trim()}"`;
-        });
-        
+        );
+
         planJson = JSON.parse(fixedJson);
         console.log("Successfully parsed with aggressive fixing");
       } catch (secondParseError) {
@@ -179,7 +324,7 @@ CRITICAL RULES:
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });
     console.log("Token count:", tokens);
-    
+
     return {
       success: true,
       data: planJson as WorkoutPlan,

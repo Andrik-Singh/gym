@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { User, Target, Calendar, Dumbbell, Heart, Activity } from "lucide-react"
 
 export function PersonalStep() {
-  const { register, setValue, watch } = useFormContext()
+  const { register, setValue } = useFormContext()
   
   return (
     <Card className="w-full max-w-2xl mx-auto">

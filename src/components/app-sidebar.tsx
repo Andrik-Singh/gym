@@ -1,5 +1,12 @@
-'use client'
-import { CookingPot, Home, ChartNoAxesCombined,Logs, Settings, Activity } from "lucide-react"
+"use client";
+import {
+  CookingPot,
+  Home,
+  ChartNoAxesCombined,
+  Logs,
+  Activity,
+  User2,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -12,8 +19,9 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
   useSidebar,
-} from "@/components/ui/sidebar"
-import Logo from "./Logo"
+} from "@/components/ui/sidebar";
+import Logo from "./Logo";
+import { ModeToggle } from "./ChangeTheme";
 
 // Menu items.
 const items = [
@@ -43,31 +51,31 @@ const items = [
     icon: ChartNoAxesCombined,
   },
   {
-    title: "Settings",
+    title: "Profile",
     url: "/dashboard/settings",
-    icon: Settings,
+    icon: User2,
   },
-]
+];
 
 export function AppSidebar() {
-  const {open} = useSidebar()
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>
             <div className="flex items-center flex-row justify-between w-full">
-                <span>
-                    <Logo/>
-                </span>
-                <span>
-                    <SidebarTrigger/>
-                </span>
+              <span>
+                <Logo />
+              </span>
+              <span>
+                <SidebarTrigger />
+              </span>
             </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-                {!open && <SidebarTrigger/>}
+              {!open && <SidebarTrigger className="md:block hidden ml-[20%]" />}
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -78,10 +86,14 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <ModeToggle></ModeToggle>
+                                
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

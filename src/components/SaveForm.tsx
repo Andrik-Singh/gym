@@ -33,18 +33,13 @@ interface WorkoutPlan {
   safety: string;
   nutrition: string;
 }
-interface Exercises {
-  name: string;
-  sets: number | null;
-  reps: string | null;
-  rest: string | null;
-}
 const SaveForm = ({ workoutPlan }: { workoutPlan: WorkoutPlan }) => {
   const router=useRouter()
   const { numberOfDays }: { numberOfDays: number } = useStore((state) => state);
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<SavePlansInput>({
     defaultValues: {
@@ -113,7 +108,11 @@ const SaveForm = ({ workoutPlan }: { workoutPlan: WorkoutPlan }) => {
           </div>
 
           <div className="flex items-center space-x-3">
-            <Checkbox {...register("isPublic")} id="public-plan" />
+            <Checkbox 
+            onCheckedChange={(check:boolean)=>{
+              setValue("isPublic",check)
+            }}
+            id="public-plan" />
             <Label
               htmlFor="public-plan"
               className="text-sm font-medium cursor-pointer"

@@ -17,7 +17,7 @@ export async function deletePlans(id:string){
         )
         return {
             success:true,
-            error:""
+            error:null
         }
     } catch (error) {
         console.error(error)

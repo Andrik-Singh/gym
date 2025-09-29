@@ -4,8 +4,8 @@ export const savePlansSchema =z.object({
     description:z.string().min(10,{message:"Description must be at least 10 characters"}).max(200,{message:"Description must be at most 200 characters"}),
     isPublic:z.boolean(),
     numberOfDays:z.number().min(1,{message:"Number of days must be at least 1"}).max(7,{message:"Number of days must be at most 7"}),
-    progression:z.string().optional(),
-    safety:z.string().optional(),
-    nutrition:z.string().optional(),
+    progression:z.string(),
+    safety:z.string(),
+    nutrition:z.string()
 })
 export type SavePlansInput = z.infer<typeof savePlansSchema>;

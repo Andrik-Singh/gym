@@ -1,7 +1,9 @@
-
+import MealPlanForm from "@/components/MealPlanForm"
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+        <MealPlanForm/>
+    </div>
   )
 }
 

@@ -19,11 +19,13 @@ import { signupSchema } from "@/lib/zod/signupSchema";
 import { authClient } from "@/lib/auth-client";
 import z from "zod";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [submitting, setSubmitting] = useState(false);
+  const router=useRouter()
   const {
     register,
     handleSubmit,
@@ -39,16 +41,17 @@ export function SignupForm({
   const onSubmit = async (unsafeData: z.input<typeof signupSchema>) => {
     try {
       setSubmitting(true)
-      const { data, error } = await authClient.signUp.email({
+      const {  error } = await authClient.signUp.email({
         ...unsafeData,
         name: unsafeData.email.split("@")[0],
-        callbackURL: window.location.origin,
       });
       if (error) {
         console.error(error);
         setError("root", {
           message: error?.message,
         });
+      }else{
+        router.push("/dashboard")
       }
     } catch (error) {
       setError("root", {
@@ -59,6 +62,45 @@ export function SignupForm({
         setSubmitting(false)
     }
   };
+  const handleSignInWithGithub=async()=>{
+    try {
+      setSubmitting(true)
+      const data=await authClient.signIn.social({
+        provider:"github",
+      })  
+      if(data.error){
+        throw new Error("Unable to sign in with github")
+      }else{
+        router.push("/dashboard")
+      }
+      console.log(data.error)
+    } catch (error) {
+      console.error(error)
+      setError("root",{
+        message:error as string
+      })
+    }finally{
+      setSubmitting(false)
+    }
+  }
+  const handleSigninWithGoogle=async()=>{
+    try {
+      const data=await authClient.signIn.social({
+        provider:"google"
+      })
+      if(data.error){
+        throw new Error("Unable to sign in with google")
+      }
+      else{
+        router.push("/dashboard")
+      }
+    } catch (error) {
+      console.error(error)
+      setError("root",{
+        message:"Unable to sign in with google"
+      })
+    }
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -76,6 +118,7 @@ export function SignupForm({
                   type="button"
                   variant="outline"
                   className="w-full bg-transparent"
+                  onClick={handleSignInWithGithub}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -93,6 +136,7 @@ export function SignupForm({
                   type="button"
                   variant="outline"
                   className="w-full bg-transparent"
+                  onClick={handleSigninWithGoogle}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
