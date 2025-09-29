@@ -173,4 +173,8 @@ Author: Andrik Singh (@andrik_singh on X)
 Issues: Open an issue
 
 
+<<<<<<< HEAD
 ⭐ Star this repo if you find it useful! Let's build better fitness habits together. 💪
+=======
+⭐ Star this repo if you find it useful! Let's build better fitness habits together. 💪
+>>>>>>> 1729e810ac76c8cce5d742fca03bdc836fb1d84f
