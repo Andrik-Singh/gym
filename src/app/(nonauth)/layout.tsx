@@ -3,10 +3,10 @@ import ModernNavbar from "@/components/Modern-Navbar";
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <header>
+      <header className="absolute top-0 w-full z-20">
         <ModernNavbar/>
       </header>
-      <main>{children}</main>
+      <main className="-mt-5">{children}</main>
     </>
   );
 };

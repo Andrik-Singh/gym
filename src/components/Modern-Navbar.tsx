@@ -41,8 +41,8 @@ const ModernNavbar = () => {
     <Skeleton />;
   }
   return (
-    <nav className="absolute top-0 w-full z-10 bg-transparent backdrop-blur-sm flex p-5 justify-between items-center shadow-sm">
-      <div>
+    <nav className="w-full z-10 bg-transparent backdrop-blur-sm  flex p-5 justify-between items-center shadow-sm">
+      <div className="text-white">
         <Logo />
       </div>
       <div className="flex flex-row gap-10">
@@ -54,12 +54,14 @@ const ModernNavbar = () => {
         <div>
           {data?.user ? (
             <div className="flex gap-4 items-center">
-              <Button asChild>
+              <Button 
+              variant={"secondary"}
+              asChild>
                 <Link href="/dashboard">Get started for free</Link>
               </Button>
             </div>
           ) : (
-            <Button asChild variant="destructive">
+            <Button asChild variant="secondary">
               <Link href="/login">Sign up</Link>
             </Button>
           )}

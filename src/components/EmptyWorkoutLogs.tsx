@@ -1,17 +1,17 @@
 import React from "react";
 
-import { ArrowRight, DumbbellIcon, Sparkles } from "lucide-react";
+import { ArrowRight, Logs, Sparkles } from "lucide-react";
 import Link from "next/link";
-const EmptyPlanCard = () => {
+const EmptyWorkoutLog = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 p-8 flex items-center justify-center dark:from-blue-900 dark:to-teal-800">
+    <div className="min-h-screen bg-gradient-to-br from-red-100 via-white to-teal-50 p-8 flex items-center justify-center dark:from-red-900 dark:to-blue-800">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-3xl shadow-xl p-12 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-full blur-3xl opacity-50 -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-100 rounded-full blur-2xl opacity-50 -ml-12 -mb-12"></div>
           <div className="relative mb-6 inline-block">
             <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl flex items-center justify-center transform rotate-6 transition-transform hover:rotate-12 duration-300">
-              <DumbbellIcon className="w-10 h-10 text-emerald-600 -rotate-6" />
+              <Logs className="w-10 h-10 text-emerald-600 -rotate-6" />
             </div>
             <div className="absolute -top-1 -right-1">
               <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
@@ -66,4 +66,4 @@ const EmptyPlanCard = () => {
   );
 };
 
-export default EmptyPlanCard;
+export default EmptyWorkoutLog;

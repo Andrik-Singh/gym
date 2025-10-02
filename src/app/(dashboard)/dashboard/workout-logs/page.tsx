@@ -1,10 +1,11 @@
 import { db } from "@/db";
 import { workoutExercises, workOutLogs } from "@/db/schema";
-import { eq, lt, not } from "drizzle-orm";
+import { and, eq, lt, not } from "drizzle-orm";
 import { cutOffDate, getAuth } from "@/lib/server/get";
 import { redirect } from "next/navigation";
 import LogCards from "@/components/LogCards";
 import { Metadata } from "next";
+import EmptyWorkoutLog from "@/components/EmptyWorkoutLogs";
 export const metadata:Metadata={
   title:"Workout-logs",
 
@@ -20,7 +21,15 @@ const page = async () => {
       workoutExercises,
       eq(workoutExercises.exerciseId, workOutLogs.exerciseId)
     )
-    .where(not(lt(workOutLogs.date, new Date(date))));
+    .where(and(
+      eq(workOutLogs.userId,authData.user.id),
+      not(lt(workOutLogs.date, new Date(date)))
+    ));
+  if(res.length === 0){
+    return (
+      <EmptyWorkoutLog/>
+    )
+  }
   return (
     <div className="">
       <LogCards res={res}/>
