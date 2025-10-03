@@ -12,6 +12,7 @@ export const metadata:Metadata={
 }
 const page = async () => {
   const authData = await getAuth();
+  console.log(authData)
   const date = await cutOffDate(30);
   if (!authData) redirect("/login");
   const res = await db
@@ -25,6 +26,7 @@ const page = async () => {
       eq(workOutLogs.userId,authData.user.id),
       not(lt(workOutLogs.date, new Date(date)))
     ));
+    console.log(res)
   if(res.length === 0){
     return (
       <EmptyWorkoutLog/>

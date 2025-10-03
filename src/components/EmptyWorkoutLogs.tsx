@@ -18,11 +18,10 @@ const EmptyWorkoutLog = () => {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">
-            Your Workout Plan Awaits
+            Your Workout log Awaits
           </h2>
           <p className="text-gray-500 mb-8 leading-relaxed">
-            Start building your personalized workout plans. Save your favorite
-            workout plans and save the workout logs.
+            Start seeing your past workouts
           </p>
           <Link href={"/dashboard/create-meal-plan"} className="group w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
             <span>Add Your First Workout Plan</span>
@@ -40,8 +39,7 @@ const EmptyWorkoutLog = () => {
                   Quick Tip
                 </h3>
                 <p className="text-xs text-gray-500 leading-relaxed">
-                  Add workouts you love to quickly generate weekly workout plans
-                  tailored to your fitness goals.
+                  Add workouts you love to quickly see how much you have worked out
                 </p>
               </div>
             </div>
@@ -49,8 +47,8 @@ const EmptyWorkoutLog = () => {
         </div>
         <div className="mt-6 grid grid-cols-3 gap-3">
           <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-            <div className="text-2xl mb-2">💪</div>
-            <p className="text-xs text-gray-600 font-medium">Workout Plans</p>
+            <div className="text-2xl mb-2">ℹ️</div>
+            <p className="text-xs text-gray-600 font-medium">Workout logs</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm text-center">
             <div className="text-2xl mb-2">📅</div>

@@ -58,7 +58,9 @@ const Testimonials = () => {
     },
   ];
   return (
-    <div className="sm:p-10 p-0">
+    <div 
+    id="testimonials"
+    className="sm:p-10 p-0">
       <h1 className="text-center text-4xl m-4">Loved by Fitness Enthusiasts Worldwide</h1>
       <h4 className="text-center text-2xl m-4 xl:px-64 px-0">
         Join thousands who have transformed their fitness journey with FitAI&apos;s
@@ -67,6 +69,7 @@ const Testimonials = () => {
       <InfiniteMovingCards
         items={testimonials}
         direction="left"
+        speed={"fast"}
       ></InfiniteMovingCards>
     </div>
   );

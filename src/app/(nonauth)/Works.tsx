@@ -50,7 +50,9 @@ const Works = () => {
   const heading = "How it works";
   const paragraph = "Get started in minutes with our simple three-step process";
   return (
-    <div className="bg-zinc-200 text-black flex flex-col gap-10 items-center sm:p-10 py-10 px-0 h-auto">
+    <div 
+    id="about"
+    className="bg-zinc-200 text-black flex flex-col gap-10 items-center sm:p-10 py-10 px-0 h-auto">
       <div className="text-3xl">
         {heading.split("").map((c, i) => (
           <motion.span

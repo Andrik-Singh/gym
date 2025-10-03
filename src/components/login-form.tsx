@@ -20,6 +20,7 @@ import z from "zod";
 import { useRouter } from "next/navigation";
 import { CircleX, LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 export function LoginForm({
   className,
   ...props
@@ -45,7 +46,10 @@ export function LoginForm({
         provider: "github",
       });
       console.log(data);
-      throw data.error;
+      if (data.error?.message) {
+        toast.error(data.error?.message);
+        throw data.error;
+      }
     } catch (error) {
       console.log(error);
       setError("root", {
@@ -61,10 +65,11 @@ export function LoginForm({
       const { error } = await authClient.signIn.social({
         provider: "google",
       });
-      if (error) {
-        throw error;
-      }else{
-        router.push("/dashboard")
+      if (error?.message) {
+        toast.error(error?.message);
+        throw error.message;
+      } else {
+        router.push("/dashboard");
       }
     } catch (error) {
       console.log(error);
@@ -82,7 +87,10 @@ export function LoginForm({
         ...unsafeData,
       });
       if (error) {
-        console.error(error);
+        console.log(error);
+        toast.error(error.message,{
+          description:error.message
+        })
         setError("root", { message: error.message });
       } else {
         console.log(data);
