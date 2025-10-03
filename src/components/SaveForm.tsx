@@ -19,6 +19,7 @@ import { SavePlansInput, savePlansSchema } from "@/lib/zod/savePlans";
 import { useStore } from "@/lib/zustand/context";
 import { SavePlans } from "@/lib/server/plans/post";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 interface WorkoutPlan {
   plan: {
     day: string;
@@ -56,6 +57,13 @@ const SaveForm = ({ workoutPlan }: { workoutPlan: WorkoutPlan }) => {
     const res= await SavePlans(unsafeData, workoutPlan?.plan);
     if(res.success){
       router.push("/dashboard/workout-plans")
+      toast.message("Plan created",{
+        description:`${res.data?.planName} has been created`
+      })
+    }else{
+      toast.error("Plan is not created",{
+        description:`${res.error}`
+      })
     }
   };
   return (
