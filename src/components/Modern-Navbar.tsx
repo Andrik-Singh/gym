@@ -77,7 +77,7 @@ const ModernNavbar = () => {
       <div className="text-white">
         <Logo />
       </div>
-      <div className="flex flex-row gap-10">
+      <div className=" flex-row gap-10 hidden xl:flex">
         {Tabs.map((title) => (
           <Link
             href={title.link}
